@@ -5,6 +5,8 @@ Created on Tue Aug 21 11:29:20 2018
 This file contains the main code for setting up the data analysis. The main loop aligns the 3 excel files in order to
 send the only the required data for analysis.
 
+Starting CLI work
+
 @author: PKellicker
 """
 
