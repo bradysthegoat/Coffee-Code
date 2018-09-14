@@ -50,19 +50,26 @@ def find_ave(count, t0, tf, data_top, data_bot, data_mid, i = 0, time_target = 0
     return[bot_av,mid_av,top_av, one, two] # round to 1 decimal place
  
 # find max flow rate based on thermo -> for boiler cooldown time -> cycles 30ml to cool down boiler after use 
-def find_max_fr(cesar_cur, recipe_cur, temp_target):
+def find_cool_down(cesar_cur, recipe_cur, temp_target):
     
     # gather necesary data
-    power = cesar_cur["Notes/Time/Realtrem"]
-    tf = temp_target
-    ti = cesar_cur["Water Temp"]
-    dt = tf - ti
-    target_fr = recipe_cur["Flow Rate Target (ml/min)"]
+    power = cesar_cur["Notes/Time/Realtrem"] # W
+    tf = temp_target # C 
+    ti = cesar_cur["Water Temp"] # C
+    dt = tf - ti # C
+    target_fr = recipe_cur["Flow Rate Target (ml/min)"] # ml/min
+    target_fr = target_fr * 1.66667e-8 # m^3/s
     
-    max_fr = power / (4200 * dt)
+    # calculate wax flow rate based on thermo
+    max_fr = power / (4200 * dt) # m^3/s
     
-    if max_fr < target_fr 
+    # find lesser fr and calc cooldown time based on that 
+    if max_fr < target_fr:
         cool_time = .00003 / max_fr
+    else:
+         cool_time = .00003/ target_fr
+    
+    return cool_time
 
 # find correct data channels and analyze data
 def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_time = False, top = None, mid = None, bot = None):
@@ -266,7 +273,9 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                     
                         time_string_1 = time_string + "." + str(i+1) # -> next block means titles add .(block# -1)
                         time_target = find_time_target(time_string_1, recipe_cur) # find new time_target
-
+                        
+                        cool_down = find_cool_down(cesar_cur, recipe_cur, temp_target)
+                        count = count + cool_down
                         break
          
             # boiler off - look for 0's or wait out drip time                                           ####**** need to imcorporate cool down time
