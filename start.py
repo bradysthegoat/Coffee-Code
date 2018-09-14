@@ -18,6 +18,7 @@ import argparse
 from filter import find_curr_recipe
 from parse_data import parse_data
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
 
 
@@ -90,9 +91,18 @@ def run(args):
     wb = load_workbook(base + "\\" + cesar_name, read_only = False, keep_vba = True)
     ws = wb['Data']
 
+    # find column number
     avg_bot_col = cesar.columns.get_loc("Avg Bot") + 1
     avg_mid_col = avg_bot_col -1
     avg_top_col = avg_bot_col -2 
+    time_zero_col = cesar.columns.get_loc("Time Zero Temp") + 1
+    
+    #convert column number to letter
+    avg_bot_col_let = get_column_letter(avg_bot_col)
+    avg_mid_col_let = get_column_letter(avg_mid_col)
+    avg_top_col_let = get_column_letter(avg_top_col)
+   #time_zero_col_let = get_column_letter(time_zero_col)
+    
 
     ### Loop ###
     for i in range(0,file_count):
@@ -140,6 +150,9 @@ def run(args):
         ws.cell(row = i+2, column = avg_bot_col).value = array[i][0]
         ws.cell(row = i+2, column = avg_mid_col).value = array[i][1]
         ws.cell(row = i+2, column = avg_top_col).value = array[i][2]
+        # input average formula into column "Time Zero Temp"
+        string_1 = "=AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + ")"
+        ws.cell(row = i+2, column = time_zero_col).value = string_1
     
     wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_3.xlsm") 
 
