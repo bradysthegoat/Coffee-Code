@@ -44,8 +44,10 @@ def run(args):
     
     ### Setup ###
     # define outside cwd dir
-    csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
-    base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel"
+    base = os.getcwd() + "\\Excel"
+    csv_folder = base + "\\Use 2"
+    #csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
+   # base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel"
 
     os.chdir(base)
 
@@ -143,7 +145,7 @@ def run(args):
 
 def main():
     parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files")
-    parser.add_argument("-v", help="Run analysis based on voltage pattern. Default is to analyze by end_time", dest = "end", type = bool, default = True)
+    parser.add_argument("-v",  action = 'store_false', help="Run analysis based on voltage pattern. Default is to analyze by end_time", dest = "end") # default = true
     #parser.add_argument("-b", help="enter second number to be added", type = float, default =0)
     parser.set_defaults(func=run)
     args = parser.parse_args()
