@@ -49,6 +49,20 @@ def find_ave(count, t0, tf, data_top, data_bot, data_mid, i = 0, time_target = 0
           
     return[bot_av,mid_av,top_av, one, two] # round to 1 decimal place
  
+# find max flow rate based on thermo -> for boiler cooldown time -> cycles 30ml to cool down boiler after use 
+def find_max_fr(cesar_cur, recipe_cur, temp_target):
+    
+    # gather necesary data
+    power = cesar_cur["Notes/Time/Realtrem"]
+    tf = temp_target
+    ti = cesar_cur["Water Temp"]
+    dt = tf - ti
+    target_fr = recipe_cur["Flow Rate Target (ml/min)"]
+    
+    max_fr = power / (4200 * dt)
+    
+    if max_fr < target_fr 
+        cool_time = .00003 / max_fr
 
 # find correct data channels and analyze data
 def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_time = False, top = None, mid = None, bot = None):
