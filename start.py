@@ -44,8 +44,8 @@ def skip_to(fle, line, folder, **kwargs):
     
 ### Setup ###
 # define outside cwd dir
-csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Code\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
-base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Code"
+csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\CDT Test\\Use 1" # C:\Users\pkellicker\Desktop\Coffee Code\Code
+base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\CDT Test"
 
 os.chdir(base)
 
@@ -80,9 +80,9 @@ dates = cesar_date.values
 
 count = 0
 brew_type ="0"
-array = np.zeros((file_count, 5))
+array = np.zeros((file_count, 6))
 
-end_time = True
+end_time = False
 
 # Load workbook for storing data & find correct columns' index
 wb = load_workbook(base + "\\" + cesar_name, read_only = False, keep_vba = True)
@@ -127,19 +127,23 @@ for i in range(0,file_count):
     array[i][0] = data[0] # bot
     array[i][1] = data[1] # mid
     array[i][2] = data[2] # top
-    '''
-    array[i][3] = data[3]
-    array[i][4] = data[4]
-   '''
+    
+    #array[i][3] = data[3] # cool down
+    
+    array[i][4] = data[3] # one
+    array[i][5] = data[4] # two
+    
     
     #store data
-    os.chdir("C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Code")
+    os.chdir("C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\CDT Test")
     
     ws.cell(row = i+2, column = avg_bot_col).value = array[i][0]
     ws.cell(row = i+2, column = avg_mid_col).value = array[i][1]
     ws.cell(row = i+2, column = avg_top_col).value = array[i][2]
+    ws.cell(row = i+2, column = avg_top_col-2).value = array[i][4]
+    ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
     
-wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume.xlsm") 
+wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_voltage_2.xlsm") 
  
 
 

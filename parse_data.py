@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime 
 import os
+import math 
 
 # find temp target value from recipe
 def find_temp_target(temp_string, recipe_cur): 
@@ -48,6 +49,30 @@ def find_ave(count, t0, tf, data_top, data_bot, data_mid, i = 0, time_target = 0
     top_av = top_range.mean().round(1)
           
     return[bot_av,mid_av,top_av, one, two] # round to 1 decimal place
+    
+def find_cool_down(cesar_cur, recipe_cur, temp_target):
+    
+    # gather necesary data
+    power = cesar_cur["Notes/Time/Realtrem"].values # W
+    power = float(power[0][:-1]) # remove 'w'
+    tf = temp_target # C 
+    ti = cesar_cur["Water Temp"] # C
+    dt = tf - ti # C
+    target_fr = recipe_cur["Flow Rate Target (ml/min)"].values # ml/min
+    target_fr = int(target_fr[0]) * 1.66667e-8 # m^3/s
+    
+    # calculate wax flow rate based on thermo
+    max_fr = power / (4200 * dt) # m^3/s
+    max_fr = float(max_fr)
+    
+    # find lesser fr and calc cooldown time based on that 
+    if max_fr < target_fr:
+        cool_time = .00003 / max_fr
+    else:
+        cool_time = .00003/ target_fr
+    
+    cool_time = int(math.ceil(cool_time)) # round up and convert to int
+    return cool_time
  
 
 # find correct data channels and analyze data
@@ -182,6 +207,8 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
         bot_av = avs[0]
         mid_av = avs[1]
         top_av = avs[2]
+        one = avs[3]
+        two = avs[4]
         
        
         
@@ -217,11 +244,11 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                 bot_av = avs[0]
                 mid_av = avs[1]
                 top_av = avs[2]
-               
-                '''
+             
+                  
                 one = avs[3]
                 two = avs[4]
-                '''
+                
             
             
             # boiler on - look for 1s
@@ -237,12 +264,19 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                 
                     if temp < 120: # -> back to 0s -> new block need to cycle temp_target and time_target
                         
+                        cool_down = find_cool_down(cesar_cur, recipe_cur, temp_target) # find cool down time before temp_target changes
+                        count = count + cool_down
+                        
                         temp_temp_target = temp_target # create temparary of temp_target to compare for back to back 1 blocks               
                         temp_string_1 = temp_string + "." + str(i+1) # concatinate new name for recipe book -> block 2 time_target = Time Target (°C).1, 3 -> " ".2
                         temp_target = find_temp_target(temp_string_1, recipe_cur) # find new temp_targer
                     
                         # check for back to back 1 blocks  -> *** == not gonna work w/ 98 and 96 
                         if temp_target > 0 and temp_temp_target >0 and i+2 <= blocks: # check for doubles, two blocks of 1s 
+                            
+                            cool_down = find_cool_down(cesar_cur, recipe_cur, temp_target) #find cool down time before temp_target changes
+                            count = count + cool_down
+                            
                             temp_string_1 = temp_string + "." + str(i+2)
                             temp_target = find_temp_target(temp_string_1, recipe_cur)
                             time_string_1 = time_string + "." + str(i+2) # -> next block means titles add .(block# -1)
@@ -263,7 +297,7 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                     count = count + 1  # keep track of index
                     
                 
-                    if time_target == count - (before + 8): # -> back to 1s -> new block new: just wait out drip time + 8 for delay ^^^^
+                    if time_target == count - (before): # -> back to 1s -> new block new: just wait out drip time + 8 for delay ^^^^
                         
                         #temp_temp_target = temp_target # dont need to check for duplicates since its not gonna plow through 0s of 2 blocks
                     
@@ -277,7 +311,7 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                         break
             
     
-    return [bot_av,mid_av,top_av] # return values
+    return [bot_av,mid_av,top_av,one,two] # return values
     
 
 # open file and skip to line specified with 'line' string 
