@@ -143,7 +143,7 @@ for i in range(0,file_count):
     ws.cell(row = i+2, column = avg_top_col-2).value = array[i][4]
     ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
     
-wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_voltage_2.xlsm") 
+wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_voltage_3.xlsm") 
  
 
 

@@ -35,8 +35,8 @@ def find_ave(count, t0, tf, data_top, data_bot, data_mid, i = 0, time_target = 0
     mid_range = np.zeros((tf-t0))
     top_range = np.zeros((tf-t0))
     
-    one = t0 + count + time_target #- int(i)
-    two = tf + count + time_target #- int(i)
+    one = t0 + count + time_target - i
+    two = tf + count + time_target - i
   
    
     for o in range(one,two):
@@ -258,7 +258,7 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                 
                     temp = data_power[j].replace("+ ", "") # format data
                     temp = float(temp) * 1000 # it was throwing error on comparing floats so I removed decimals
-                    temp = int(temp) # change to int since no more decimals and need to compare
+                    temp = int(temp) # change to int since no more decimals and need to compare -> it was giving error upon comparing floats
                 
                     count = count + 1 # keep track of index 
                 
@@ -281,6 +281,8 @@ def parse_data(recipe_cur, data_cur, data_f, cesar_cur, t0 = 5, tf = 15, end_tim
                             temp_target = find_temp_target(temp_string_1, recipe_cur)
                             time_string_1 = time_string + "." + str(i+2) # -> next block means titles add .(block# -1)
                             time_target = find_time_target(time_string_1, recipe_cur)
+                            
+                            i = i + 1 # need to increment by another block 
                             break
                     
                     
