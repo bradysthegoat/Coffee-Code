@@ -1,3 +1,11 @@
+<<<<<<< HEAD
 *.csv
 *.xlsm
 *.xlsx
+=======
+.xlxs
+.xlxm
+.csv
+Excel/
+CDT Test/
+>>>>>>> old-state

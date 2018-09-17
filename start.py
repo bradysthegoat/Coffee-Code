@@ -43,12 +43,16 @@ def skip_to(fle, line, folder, **kwargs):
 # ********************************************************************* #
 def run(args):
     
+<<<<<<< HEAD
     ### Setup ###
     # define outside cwd dir
     base = os.getcwd() + "\\Excel"
     csv_folder = base + "\\Use 2"
     #csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
    # base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel"
+=======
+
+>>>>>>> old-state
 
     os.chdir(base)
 
@@ -83,13 +87,17 @@ def run(args):
 
     count = 0
     brew_type ="0"
-    array = np.zeros((file_count, 5))
+    array = np.zeros((file_count, 6))
 
+<<<<<<< HEAD
     end_time = args.end
 
     # Load workbook for storing data & find correct columns' index
     wb = load_workbook(base + "\\" + cesar_name, read_only = False, keep_vba = True)
     ws = wb['Data']
+=======
+
+>>>>>>> old-state
 
     # find column number
     avg_bot_col = cesar.columns.get_loc("Avg Bot") + 1
@@ -136,13 +144,14 @@ def run(args):
     
 
     
+<<<<<<< HEAD
         array[i][0] = data[0] # bot
         array[i][1] = data[1] # mid
         array[i][2] = data[2] # top
-        '''
-        array[i][3] = data[3]
-        array[i][4] = data[4]
-        '''
+        
+        array[i][3] = data[4] # one
+        array[i][4] = data[5] # two
+        
     
         #store data
         #os.chdir("C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel")
@@ -150,6 +159,9 @@ def run(args):
         ws.cell(row = i+2, column = avg_bot_col).value = array[i][0]
         ws.cell(row = i+2, column = avg_mid_col).value = array[i][1]
         ws.cell(row = i+2, column = avg_top_col).value = array[i][2]
+        ws.cell(row = i+2, column = avg_top_col-2).value = array[i][4]
+        ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
+        
         # input average formula into column "Time Zero Temp"
         string_1 = "=AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + ")"
         ws.cell(row = i+2, column = time_zero_col).value = string_1
@@ -163,6 +175,9 @@ def main():
     parser.set_defaults(func=run)
     args = parser.parse_args()
     args.func(args)
+=======
+   
+>>>>>>> old-state
  
 
 if __name__ == "__main__":
