@@ -1,11 +1,7 @@
-<<<<<<< HEAD
 *.csv
 *.xlsm
 *.xlsx
-=======
-.xlxs
-.xlxm
-.csv
+setup.py
 Excel/
 CDT Test/
->>>>>>> old-state
+
