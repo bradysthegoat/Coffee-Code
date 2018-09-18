@@ -5,7 +5,7 @@ Created on Tue Aug 21 11:29:20 2018
 This file contains the main code for setting up the data analysis. The main loop aligns the 3 excel files in order to
 send the only the required data for analysis.
 
-Starting CLI work
+ver 0.01
 
 @author: PKellicker
 """
@@ -43,22 +43,20 @@ def skip_to(fle, line, folder, **kwargs):
 # ********************************************************************* #
 def run(args):
     
-<<<<<<< HEAD
     ### Setup ###
     # define outside cwd dir
-    base = os.getcwd() + "\\Excel"
-    csv_folder = base + "\\Use 2"
+    base = os.getcwd() + "\\CDT Test"
+    csv_folder = base + "\\" + args.data #"+\\Use 1" #
+    
     #csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
    # base = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel"
-=======
 
->>>>>>> old-state
 
     os.chdir(base)
 
     # import static files
-    cesar_name = "CP300 & CF90 Cup temp-volume.xlsm"
-    recipe_name = "CP300 EB2.xlsx"
+    cesar_name = args.kpi #= "CP300 & CF90 Cup temp-volume.xlsm" # 
+    recipe_name = args.recipe #= "CP300 EB2.xlsx" #
 
     cesar = pd.read_excel(cesar_name)
     recipe = pd.read_excel(recipe_name, skiprows = 1)
@@ -86,18 +84,13 @@ def run(args):
     # ********************************************************************* #
 
     count = 0
-    brew_type ="0"
     array = np.zeros((file_count, 6))
-
-<<<<<<< HEAD
     end_time = args.end
 
     # Load workbook for storing data & find correct columns' index
     wb = load_workbook(base + "\\" + cesar_name, read_only = False, keep_vba = True)
     ws = wb['Data']
-=======
 
->>>>>>> old-state
 
     # find column number
     avg_bot_col = cesar.columns.get_loc("Avg Bot") + 1
@@ -140,17 +133,15 @@ def run(args):
         recipe_curr = recipe_curr_1[0]
         brew_type = recipe_curr_1[1]
         
-        data = parse_data(recipe_cur = recipe_curr, data_cur = data_curr, data_f = data_table, cesar_cur = cesar_curr, end_time = end_time) 
+        data = parse_data(recipe_cur = recipe_curr, data_cur = data_curr, data_f = data_table, cesar_cur = cesar_curr, end_time = end_time, top = args.top, mid = args.mid, bot = args.bot) 
     
 
-    
-<<<<<<< HEAD
         array[i][0] = data[0] # bot
         array[i][1] = data[1] # mid
         array[i][2] = data[2] # top
         
-        array[i][3] = data[4] # one
-        array[i][4] = data[5] # two
+        array[i][3] = data[3] # one
+        array[i][4] = data[4] # two
         
     
         #store data
@@ -159,34 +150,35 @@ def run(args):
         ws.cell(row = i+2, column = avg_bot_col).value = array[i][0]
         ws.cell(row = i+2, column = avg_mid_col).value = array[i][1]
         ws.cell(row = i+2, column = avg_top_col).value = array[i][2]
-        ws.cell(row = i+2, column = avg_top_col-2).value = array[i][4]
-        ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
+        #ws.cell(row = i+2, column = avg_top_col-2).value = array[i][4]
+        #ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
         
         # input average formula into column "Time Zero Temp"
         string_1 = "=AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + ")"
         ws.cell(row = i+2, column = time_zero_col).value = string_1
     
-    wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_3.xlsm") 
+    wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_7.xlsm") 
 
 def main():
-    parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files")
-    parser.add_argument("-v",  action = 'store_false', help="Run analysis based on voltage pattern. Default is to analyze by end_time", dest = "end") # default = true
-    #parser.add_argument("-b", help="enter second number to be added", type = float, default =0)
+    parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files. Recipe and KPI files, and Data folder should be placed in same location as .exe")
+    required = parser.add_argument_group("Required Arguments")
+    required.add_argument("-kpi", help = "enter full name of KPI file", type = str, required = True)
+    required.add_argument("-recipe", help = "enter full name of recipe file", type = str, required = True)
+    required.add_argument("-data", help = "enter full name of folder containing the .csv files", type = str, required = True)
+    
+    optional = parser.add_argument_group("Other Optional Arguments")
+    optional.add_argument("-v",  action = 'store_false', help="Run analysis based on voltage pattern. Default is to analyze by end_time", dest = "end", default = True) 
+    optional.add_argument("-top", help="enter name of top channel title", type = str, default =None)
+    optional.add_argument("-mid", help="enter name of mid channel title", type = str, default =None)
+    optional.add_argument("-bot", help="enter name of bot channel title", type = str, default =None)
     parser.set_defaults(func=run)
     args = parser.parse_args()
     args.func(args)
-=======
-   
->>>>>>> old-state
+
  
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
 
 
 
