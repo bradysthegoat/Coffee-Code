@@ -154,7 +154,7 @@ def run(args):
         #ws.cell(row = i+2, column = avg_top_col-1).value = array[i][5]
         
         # input average formula into column "Time Zero Temp"
-        string_1 = "=AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + ")"
+        string_1 = "=ROUND(AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + "),1)" # ********************changed could be bug
         ws.cell(row = i+2, column = time_zero_col).value = string_1
     
     wb.save(base + "\\" + cesar_name) 
