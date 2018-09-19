@@ -45,7 +45,7 @@ def run(args):
     
     ### Setup ###
     # define outside cwd dir
-    base = os.getcwd() + "\\CDT Test"
+    base = os.getcwd() #+ "\\CDT Test"
     csv_folder = base + "\\" + args.data #"+\\Use 1" #
     
     #csv_folder = "C:\\Users\\pkellicker\\Desktop\\Coffee Code\\Git Code\\Excel\\Use 2" # C:\Users\pkellicker\Desktop\Coffee Code\Code
@@ -157,7 +157,7 @@ def run(args):
         string_1 = "=AVERAGE(" + avg_bot_col_let + str(i+2) + "," + avg_mid_col_let + str(i+2) + "," + avg_top_col_let + str(i+2) + ")"
         ws.cell(row = i+2, column = time_zero_col).value = string_1
     
-    wb.save(base + "\\" + "CP300 & CF90 Cup temp-volume_7.xlsm") 
+    wb.save(base + "\\" + cesar_name) 
 
 def main():
     parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files. Recipe and KPI files, and Data folder should be placed in same location as .exe")
