@@ -66,7 +66,11 @@ def run(args):
     # * * * work cesar to correspond w/ csv * * * #
     cesar_csv = cesar.filter(items = ['CSV Filename']) # Create df of cesar with csv filename only *** does skip Tea line
     cesar_csv = cesar_csv.dropna() # Clean up df
-    file_count = cesar_csv.shape[0] # get number of csv files
+    
+    # find length based on this column - should be more accurate
+    cesar_length = cesar.filter(items = ["Pre Test Chamber Weight grams"])
+    cesar_length = cesar_length.dropna()
+    file_count = cesar_length.shape[0] # get number of csv files
     
     names = cesar_csv.values # I want a string array of the names so I can feed them into the fn skip_to
 
@@ -79,6 +83,10 @@ def run(args):
     cesar_date = cesar.filter(items = ['Date'])
     cesar_date = cesar_date.dropna()
     dates = cesar_date.values
+    
+    # find number of date entries to avoid index error
+    num_dates = cesar_date.shape[0]
+    
 
 
     # ********************************************************************* #
@@ -109,9 +117,10 @@ def run(args):
     for i in range(0,file_count):
    
         # check for when tea starts - also for incrementing since one line in xlsx is for  *** careful it needs to find tea i.e. start b4 tea line
-        if tea == 0:
-            if dates[i] == "EB2 TEA BREWS" :
-                tea = 1
+        if i < num_dates:
+            if tea == 0:
+                if dates[i] == "EB2 TEA BREWS" :
+                    tea = 1
     
         file_temp = names[i] + ".csv" # add the .csv extension to file name
         file_temp = str(file_temp)[2:-2] # remove first 2 and last 2 chars -> ['']
@@ -129,7 +138,7 @@ def run(args):
         cesar_rowi = cesar['Test Number'] == i + 1 + tea
         cesar_curr = cesar[cesar_rowi] # cesar_curr = row corresponding to current csv file *** need to step by 1 when -> tea
         
-        recipe_curr_1 = find_curr_recipe(cesar_curr, recipe, data_curr, tea)
+        recipe_curr_1 = find_curr_recipe(cesar_curr, recipe, tea)
         recipe_curr = recipe_curr_1[0]
         brew_type = recipe_curr_1[1]
         
@@ -160,7 +169,7 @@ def run(args):
     wb.save(base + "\\" + cesar_name) 
 
 def main():
-    parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files. Recipe and KPI files, and Data folder should be placed in same location as .exe")
+    parser = argparse.ArgumentParser(description = "Analyze coffee test data. Need KPI, recipe, and csv files. Recipe and KPI files, and Data folder should be placed in same location as .exe. Be sure to use " " when specifying names")
     required = parser.add_argument_group("Required Arguments")
     required.add_argument("-kpi", help = "enter full name of KPI file", type = str, required = True)
     required.add_argument("-recipe", help = "enter full name of recipe file", type = str, required = True)

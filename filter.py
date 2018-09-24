@@ -10,7 +10,7 @@ import numpy as np
 import os
 import re
 
-def find_curr_recipe(cesar_a, recipe_a, data_a, tea_a):
+def find_curr_recipe(cesar_a, recipe_a, tea_a):
     
     ### need to find what brew ###
     cesar_brew = cesar_a.filter(items = ['Brew Type.1','Brew Size','Brew Type'])
